@@ -1,0 +1,121 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v9.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v9.0": {
+      "RallyAPI.Host/1.0.0": {
+        "dependencies": {
+          "RallyAPI.Infrastructure": "1.0.0",
+          "RallyAPI.Users.Endpoints": "1.0.0",
+          "RallyAPI.Users.Infrastructure": "1.0.0"
+        },
+        "runtime": {
+          "RallyAPI.Host.dll": {}
+        }
+      },
+      "RallyAPI.Infrastructure/1.0.0": {
+        "dependencies": {
+          "RallyAPI.SharedKernel": "1.0.0"
+        },
+        "runtime": {
+          "RallyAPI.Infrastructure.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "RallyAPI.SharedKernel/1.0.0": {
+        "runtime": {
+          "RallyAPI.SharedKernel.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "RallyAPI.Users.Application/1.0.0": {
+        "dependencies": {
+          "RallyAPI.Users.Domain": "1.0.0"
+        },
+        "runtime": {
+          "RallyAPI.Users.Application.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "RallyAPI.Users.Domain/1.0.0": {
+        "dependencies": {
+          "RallyAPI.SharedKernel": "1.0.0"
+        },
+        "runtime": {
+          "RallyAPI.Users.Domain.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "RallyAPI.Users.Endpoints/1.0.0": {
+        "dependencies": {
+          "RallyAPI.Users.Application": "1.0.0"
+        },
+        "runtime": {
+          "RallyAPI.Users.Endpoints.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "RallyAPI.Users.Infrastructure/1.0.0": {
+        "dependencies": {
+          "RallyAPI.Users.Application": "1.0.0"
+        },
+        "runtime": {
+          "RallyAPI.Users.Infrastructure.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "RallyAPI.Host/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "RallyAPI.Infrastructure/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "RallyAPI.SharedKernel/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "RallyAPI.Users.Application/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "RallyAPI.Users.Domain/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "RallyAPI.Users.Endpoints/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "RallyAPI.Users.Infrastructure/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}
