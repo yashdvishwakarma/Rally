@@ -5,6 +5,7 @@ C:\Users\vishw\source\repos\Rally\src\RallyAPI.SharedKernel\obj\Debug\net9.0\Ral
 C:\Users\vishw\source\repos\Rally\src\RallyAPI.SharedKernel\obj\Debug\net9.0\RallyAPI.SharedKernel.AssemblyInfoInputs.cache
 C:\Users\vishw\source\repos\Rally\src\RallyAPI.SharedKernel\obj\Debug\net9.0\RallyAPI.SharedKernel.AssemblyInfo.cs
 C:\Users\vishw\source\repos\Rally\src\RallyAPI.SharedKernel\obj\Debug\net9.0\RallyAPI.SharedKernel.csproj.CoreCompileInputs.cache
+C:\Users\vishw\source\repos\Rally\src\RallyAPI.SharedKernel\obj\Debug\net9.0\RallyAPI.SharedKernel.sourcelink.json
 C:\Users\vishw\source\repos\Rally\src\RallyAPI.SharedKernel\obj\Debug\net9.0\RallyAPI.SharedKernel.dll
 C:\Users\vishw\source\repos\Rally\src\RallyAPI.SharedKernel\obj\Debug\net9.0\refint\RallyAPI.SharedKernel.dll
 C:\Users\vishw\source\repos\Rally\src\RallyAPI.SharedKernel\obj\Debug\net9.0\RallyAPI.SharedKernel.pdb

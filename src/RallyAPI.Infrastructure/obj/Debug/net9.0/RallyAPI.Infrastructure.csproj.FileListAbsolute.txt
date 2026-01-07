@@ -8,6 +8,7 @@ C:\Users\vishw\source\repos\Rally\src\RallyAPI.Infrastructure\obj\Debug\net9.0\R
 C:\Users\vishw\source\repos\Rally\src\RallyAPI.Infrastructure\obj\Debug\net9.0\RallyAPI.Infrastructure.AssemblyInfoInputs.cache
 C:\Users\vishw\source\repos\Rally\src\RallyAPI.Infrastructure\obj\Debug\net9.0\RallyAPI.Infrastructure.AssemblyInfo.cs
 C:\Users\vishw\source\repos\Rally\src\RallyAPI.Infrastructure\obj\Debug\net9.0\RallyAPI.Infrastructure.csproj.CoreCompileInputs.cache
+C:\Users\vishw\source\repos\Rally\src\RallyAPI.Infrastructure\obj\Debug\net9.0\RallyAPI.Infrastructure.sourcelink.json
 C:\Users\vishw\source\repos\Rally\src\RallyAPI.Infrastructure\obj\Debug\net9.0\RallyAPI.F90CAF43.Up2Date
 C:\Users\vishw\source\repos\Rally\src\RallyAPI.Infrastructure\obj\Debug\net9.0\RallyAPI.Infrastructure.dll
 C:\Users\vishw\source\repos\Rally\src\RallyAPI.Infrastructure\obj\Debug\net9.0\refint\RallyAPI.Infrastructure.dll

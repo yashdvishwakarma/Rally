@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RallyAPI.SharedKernel.Domain
+namespace RallyAPI.SharedKernel.Results
 {
     public class Result
     {
