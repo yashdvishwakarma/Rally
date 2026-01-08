@@ -1,0 +1,51 @@
+﻿using Microsoft.EntityFrameworkCore;
+using RallyAPI.Users.Application.Abstractions;
+using RallyAPI.Users.Domain.Entities;
+using RallyAPI.Users.Domain.ValueObjects;
+
+namespace RallyAPI.Users.Infrastructure.Persistence.Repositories;
+
+public class RiderRepository : IRiderRepository
+{
+    private readonly UsersDbContext _context;
+
+    public RiderRepository(UsersDbContext context)
+    {
+        _context = context;
+    }
+
+    public async Task<Rider?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+    {
+        return await _context.Riders
+            .FirstOrDefaultAsync(r => r.Id == id, cancellationToken);
+    }
+
+    public async Task<Rider?> GetByPhoneAsync(PhoneNumber phone, CancellationToken cancellationToken = default)
+    {
+        return await _context.Riders
+            .FirstOrDefaultAsync(r => r.Phone == phone, cancellationToken);
+    }
+
+    public async Task<bool> ExistsByPhoneAsync(PhoneNumber phone, CancellationToken cancellationToken = default)
+    {
+        return await _context.Riders
+            .AnyAsync(r => r.Phone == phone, cancellationToken);
+    }
+
+    public async Task<List<Rider>> GetOnlineRidersAsync(CancellationToken cancellationToken = default)
+    {
+        return await _context.Riders
+            .Where(r => r.IsOnline && r.IsActive)
+            .ToListAsync(cancellationToken);
+    }
+
+    public async Task AddAsync(Rider rider, CancellationToken cancellationToken = default)
+    {
+        await _context.Riders.AddAsync(rider, cancellationToken);
+    }
+
+    public void Update(Rider rider)
+    {
+        _context.Riders.Update(rider);
+    }
+}
