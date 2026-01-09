@@ -10,7 +10,7 @@ namespace RallyAPI.SharedKernel.Domain
     {
         public Guid Id { get; protected set; }
         public DateTime CreatedAt { get; protected set; }
-        public DateTime UpdateAt { get; protected set; }
+        public DateTime UpdatedAt { get; protected set; }
         public DateTime? DeletedAt { get; protected set; }
 
         private readonly List<IDomainEvent> _domainEvents = new();
@@ -20,7 +20,7 @@ namespace RallyAPI.SharedKernel.Domain
         {
             Id = Guid.NewGuid();
             CreatedAt = DateTime.UtcNow;
-            UpdateAt = DateTime.UtcNow;
+            UpdatedAt = DateTime.UtcNow;
         }
 
         public void AddDomainEvent(IDomainEvent domainEvent)
@@ -40,7 +40,7 @@ namespace RallyAPI.SharedKernel.Domain
 
         public void MarkAsUpdated()
         {
-            UpdateAt = DateTime.UtcNow;
+            UpdatedAt = DateTime.UtcNow;
         }
 
         public void MarkAsDeleted()

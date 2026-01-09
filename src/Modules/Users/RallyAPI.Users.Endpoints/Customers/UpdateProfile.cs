@@ -1,0 +1,40 @@
+﻿using MediatR;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing;
+using RallyAPI.Users.Application.Customers.Commands.UpdateProfile;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Builder;
+
+namespace RallyAPI.Users.Endpoints.Customers;
+
+public class UpdateProfile : IEndpoint
+{
+    public void MapEndpoint(IEndpointRouteBuilder app)
+    {
+        app.MapPut("/api/customers/profile", HandleAsync)
+            .WithName("CustomerUpdateProfile")
+            .WithTags("Customers")
+            .RequireAuthorization("Customer");
+    }
+
+    public record Request(string? Name, string? Email);
+
+    private static async Task<IResult> HandleAsync(
+        Request request,
+        ClaimsPrincipal user,
+        ISender sender,
+        CancellationToken cancellationToken)
+    {
+        var customerId = user.FindFirst("sub")?.Value;
+
+        if (!Guid.TryParse(customerId, out var id))
+            return Results.Unauthorized();
+
+        var command = new UpdateCustomerProfileCommand(id, request.Name, request.Email);
+        var result = await sender.Send(command, cancellationToken);
+
+        return result.IsFailure
+            ? Results.BadRequest(new { error = result.Error.Message })
+            : Results.Ok(new { message = "Profile updated" });
+    }
+}
