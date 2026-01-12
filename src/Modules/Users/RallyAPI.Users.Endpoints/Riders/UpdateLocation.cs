@@ -1,12 +1,40 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using MediatR;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing;
+using Microsoft.AspNetCore.Builder;
+using RallyAPI.Users.Application.Riders.Commands.UpdateLocation;
+using System.Security.Claims;
 
-namespace RallyAPI.Users.Endpoints.Riders
+namespace RallyAPI.Users.Endpoints.Riders;
+
+public class UpdateLocation : IEndpoint
 {
-    internal class UpdateLocation
+    public void MapEndpoint(IEndpointRouteBuilder app)
     {
+        app.MapPost("/api/riders/location", HandleAsync)
+            .WithTags("Riders")
+            .WithSummary("Update rider current location")
+            .RequireAuthorization("Rider");
+    }
+
+    private static async Task<IResult> HandleAsync(
+        UpdateRiderLocationRequest request,
+        ClaimsPrincipal user,
+        ISender sender,
+        CancellationToken ct)
+    {
+        var riderId = Guid.Parse(user.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        var command = new UpdateRiderLocationCommand(
+            riderId,
+            request.Latitude,
+            request.Longitude);
+
+        var result = await sender.Send(command, ct);
+
+        return result.IsSuccess
+            ? Results.Ok()
+            : Results.BadRequest(result.Error);
     }
 }
+
+public record UpdateRiderLocationRequest(decimal Latitude, decimal Longitude);

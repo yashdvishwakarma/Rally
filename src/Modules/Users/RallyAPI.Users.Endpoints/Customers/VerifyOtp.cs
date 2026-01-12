@@ -16,10 +16,10 @@ public class VerifyOtp : IEndpoint
             .AllowAnonymous();
     }
 
-    public record Request(string PhoneNumber, string Otp);
+    public record VerifyCustomerOtpRequest(string PhoneNumber, string Otp);
 
     private static async Task<IResult> HandleAsync(
-        Request request,
+        VerifyCustomerOtpRequest request,
         ISender sender,
         CancellationToken cancellationToken)
     {

@@ -17,10 +17,10 @@ public class UpdateProfile : IEndpoint
             .RequireAuthorization("Customer");
     }
 
-    public record Request(string? Name, string? Email);
+    public record UpdateCustomerProfileRequest(string? Name, string? Email);
 
     private static async Task<IResult> HandleAsync(
-        Request request,
+        UpdateCustomerProfileRequest request,
         ClaimsPrincipal user,
         ISender sender,
         CancellationToken cancellationToken)

@@ -17,7 +17,7 @@ public class AddAddress : IEndpoint
             .RequireAuthorization("Customer");
     }
 
-    public record Request(
+    public record AddCustomerAddressRequest(
         string AddressLine,
         string? Landmark,
         decimal Latitude,
@@ -26,7 +26,7 @@ public class AddAddress : IEndpoint
         bool IsDefault);
 
     private static async Task<IResult> HandleAsync(
-        Request request,
+        AddCustomerAddressRequest request,
         ClaimsPrincipal user,
         ISender sender,
         CancellationToken cancellationToken)

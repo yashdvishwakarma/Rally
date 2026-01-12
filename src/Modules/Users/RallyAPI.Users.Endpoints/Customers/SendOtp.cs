@@ -16,10 +16,10 @@ public class SendOtp : IEndpoint
             .AllowAnonymous();
     }
 
-    public record Request(string PhoneNumber);
+    public record SendCustomerOtpRequest(string PhoneNumber);
 
     private static async Task<IResult> HandleAsync(
-        Request request,
+        SendCustomerOtpRequest request,
         ISender sender,
         CancellationToken cancellationToken)
     {

@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using RallyAPI.Users.Infrastructure;
 using RallyAPI.Users.Endpoints;
+using RallyAPI.Catalog.Infrastructure;
+using RallyAPI.Catalog.Endpoints;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,9 +12,18 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddUsersInfrastructure(builder.Configuration);
 builder.Services.AddUsersEndpoints();
 
+
+//catalog module
+builder.Services.AddCatalogInfrastructure(builder.Configuration);
+builder.Services.AddCatalogEndpoints();
+
 // Add MediatR for Application layer
 builder.Services.AddMediatR(cfg =>
-    cfg.RegisterServicesFromAssembly(typeof(RallyAPI.Users.Application.Abstractions.IUnitOfWork).Assembly));
+{
+    cfg.RegisterServicesFromAssembly(typeof(RallyAPI.Users.Application.Abstractions.IUnitOfWork).Assembly);
+    cfg.RegisterServicesFromAssembly(typeof(RallyAPI.Catalog.Application.Abstractions.IUnitOfWork).Assembly);
+});
+
 
 // Add Authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
