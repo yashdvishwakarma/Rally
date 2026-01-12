@@ -1,0 +1,308 @@
+[
+  {
+    "ContainingType": "Program\u002B\u003C\u003Ec",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_3",
+    "RelativePath": "",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.String",
+        "MediaTypes": [
+          "text/plain"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "RallyAPI.Users.Endpoints.Customers.AddAddress",
+    "Method": "HandleAsync",
+    "RelativePath": "api/customers/addresses",
+    "HttpMethod": "POST",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "RallyAPI.Users.Endpoints.Customers.AddAddress\u002BAddCustomerAddressRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ],
+    "Tags": [
+      "Customers"
+    ],
+    "EndpointName": "CustomerAddAddress"
+  },
+  {
+    "ContainingType": "RallyAPI.Users.Endpoints.Customers.SendOtp",
+    "Method": "HandleAsync",
+    "RelativePath": "api/customers/otp/send",
+    "HttpMethod": "POST",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "RallyAPI.Users.Endpoints.Customers.SendOtp\u002BSendCustomerOtpRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ],
+    "Tags": [
+      "Customers"
+    ],
+    "EndpointName": "CustomerSendOtp"
+  },
+  {
+    "ContainingType": "RallyAPI.Users.Endpoints.Customers.VerifyOtp",
+    "Method": "HandleAsync",
+    "RelativePath": "api/customers/otp/verify",
+    "HttpMethod": "POST",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "RallyAPI.Users.Endpoints.Customers.VerifyOtp\u002BVerifyCustomerOtpRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ],
+    "Tags": [
+      "Customers"
+    ],
+    "EndpointName": "CustomerVerifyOtp"
+  },
+  {
+    "ContainingType": "RallyAPI.Users.Endpoints.Customers.GetProfile",
+    "Method": "HandleAsync",
+    "RelativePath": "api/customers/profile",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ],
+    "Tags": [
+      "Customers"
+    ],
+    "EndpointName": "CustomerGetProfile"
+  },
+  {
+    "ContainingType": "RallyAPI.Users.Endpoints.Customers.UpdateProfile",
+    "Method": "HandleAsync",
+    "RelativePath": "api/customers/profile",
+    "HttpMethod": "PUT",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "RallyAPI.Users.Endpoints.Customers.UpdateProfile\u002BUpdateCustomerProfileRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ],
+    "Tags": [
+      "Customers"
+    ],
+    "EndpointName": "CustomerUpdateProfile"
+  },
+  {
+    "ContainingType": "RallyAPI.Users.Endpoints.Riders.UpdateLocation",
+    "Method": "HandleAsync",
+    "RelativePath": "api/riders/location",
+    "HttpMethod": "POST",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "RallyAPI.Users.Endpoints.Riders.UpdateRiderLocationRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ],
+    "Tags": [
+      "Riders"
+    ],
+    "Summary": "Update rider current location"
+  },
+  {
+    "ContainingType": "RallyAPI.Users.Endpoints.Riders.SendOtp",
+    "Method": "HandleAsync",
+    "RelativePath": "api/riders/otp/send",
+    "HttpMethod": "POST",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "RallyAPI.Users.Endpoints.Riders.SendRiderOtpRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ],
+    "Tags": [
+      "Riders"
+    ],
+    "Summary": "Send OTP to rider phone"
+  },
+  {
+    "ContainingType": "RallyAPI.Users.Endpoints.Riders.VerifyOtp",
+    "Method": "HandleAsync",
+    "RelativePath": "api/riders/otp/verify",
+    "HttpMethod": "POST",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "RallyAPI.Users.Endpoints.Riders.VerifyRiderOtpRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ],
+    "Tags": [
+      "Riders"
+    ],
+    "Summary": "Verify OTP and get token"
+  },
+  {
+    "ContainingType": "RallyAPI.Users.Endpoints.Riders.GetProfile",
+    "Method": "HandleAsync",
+    "RelativePath": "api/riders/profile",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ],
+    "Tags": [
+      "Riders"
+    ],
+    "Summary": "Get rider profile"
+  },
+  {
+    "ContainingType": "RallyAPI.Users.Endpoints.Riders.UpdateProfile",
+    "Method": "HandleAsync",
+    "RelativePath": "api/riders/profile",
+    "HttpMethod": "PUT",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "RallyAPI.Users.Endpoints.Riders.UpdateRiderProfileRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ],
+    "Tags": [
+      "Riders"
+    ],
+    "Summary": "Update rider profile"
+  },
+  {
+    "ContainingType": "RallyAPI.Users.Endpoints.Riders.GoOffline",
+    "Method": "HandleAsync",
+    "RelativePath": "api/riders/status/offline",
+    "HttpMethod": "POST",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ],
+    "Tags": [
+      "Riders"
+    ],
+    "Summary": "Set rider status to offline"
+  },
+  {
+    "ContainingType": "RallyAPI.Users.Endpoints.Riders.GoOnline",
+    "Method": "HandleAsync",
+    "RelativePath": "api/riders/status/online",
+    "HttpMethod": "POST",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ],
+    "Tags": [
+      "Riders"
+    ],
+    "Summary": "Set rider status to online"
+  }
+]

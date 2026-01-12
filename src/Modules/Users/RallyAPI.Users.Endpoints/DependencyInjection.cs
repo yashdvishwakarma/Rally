@@ -7,16 +7,12 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddUsersEndpoints(this IServiceCollection services)
     {
-        // MediatR registration for this assembly
-        services.AddMediatR(cfg =>
-            cfg.RegisterServicesFromAssembly(typeof(DependencyInjection).Assembly));
-
+        // Nothing needed here - MediatR registered in Host
         return services;
     }
 
     public static IEndpointRouteBuilder MapUsersEndpoints(this IEndpointRouteBuilder app)
     {
-        // Get all IEndpoint implementations
         var endpointTypes = typeof(DependencyInjection).Assembly
             .GetTypes()
             .Where(t => typeof(IEndpoint).IsAssignableFrom(t) && !t.IsInterface && !t.IsAbstract);
