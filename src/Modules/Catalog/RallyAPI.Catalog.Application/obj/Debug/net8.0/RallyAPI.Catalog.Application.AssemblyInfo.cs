@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("RallyAPI.Catalog.Application")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1376fb2430660436060ab6e97a5cb6598f33f373")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b347f77d7b262d785b9675f0f655742f669fe0b5")]
 [assembly: System.Reflection.AssemblyProductAttribute("RallyAPI.Catalog.Application")]
 [assembly: System.Reflection.AssemblyTitleAttribute("RallyAPI.Catalog.Application")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
