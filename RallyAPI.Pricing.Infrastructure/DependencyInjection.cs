@@ -1,0 +1,54 @@
+﻿// RallyAPI.Pricing.Infrastructure/DependencyInjection.cs
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using RallyAPI.Pricing.Application.Abstractions;
+using RallyAPI.Pricing.Application.Rules;
+using RallyAPI.Pricing.Application.Services;
+using RallyAPI.Pricing.Domain.Abstractions;
+using RallyAPI.Pricing.Domain.Repositories;
+using RallyAPI.Pricing.Infrastructure.Persistence;
+using RallyAPI.Pricing.Infrastructure.Providers;
+using RallyAPI.Pricing.Infrastructure.Repositories;
+
+namespace RallyAPI.Pricing.Infrastructure;
+
+public static class DependencyInjection
+{
+    public static IServiceCollection AddPricingInfrastructure(
+        this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        var connectionString = configuration.GetConnectionString("Database")!;
+
+        // DbContext
+        services.AddDbContext<PricingDbContext>(options =>
+            options.UseNpgsql(connectionString));
+
+        // Repository
+        services.AddScoped<IPricingConfigRepository, PricingConfigRepository>();
+        services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<PricingDbContext>());
+
+        // Rules (easy to add/remove)
+        services.AddScoped<IPricingRule, BaseFeeRule>();
+        services.AddScoped<IPricingRule, DistanceRule>();
+        services.AddScoped<IPricingRule, TimeSurgeRule>();
+        services.AddScoped<IPricingRule, WeatherSurgeRule>();
+        services.AddScoped<IPricingRule, DemandSurgeRule>();
+        services.AddScoped<IPricingRule, SpecialDayRule>();
+
+        // Engine
+        services.AddScoped<IPricingEngine, PricingEngine>();
+
+        // Providers
+        services.AddHttpClient<IWeatherProvider, WeatherProvider>();
+        services.AddScoped<IDemandTracker>(_ => new DemandTracker(
+            _.GetRequiredService<Microsoft.Extensions.Caching.Memory.IMemoryCache>(),
+            connectionString));
+
+        // Cache
+        services.AddMemoryCache();
+
+        return services;
+    }
+}
