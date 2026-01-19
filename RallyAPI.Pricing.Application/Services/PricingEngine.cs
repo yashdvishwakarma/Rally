@@ -12,6 +12,7 @@ public class PricingEngine : IPricingEngine
     private readonly IEnumerable<IPricingRule> _rules;
     private readonly IPricingConfigRepository _configRepository;
     private readonly ILogger<PricingEngine> _logger;
+    private const int QuoteExpiryMinutes = 10;
 
     public PricingEngine(
         IEnumerable<IPricingRule> rules,
@@ -53,7 +54,6 @@ public class PricingEngine : IPricingEngine
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error executing rule {Rule}", rule.RuleName);
-                // Continue with other rules
             }
         }
 
@@ -63,7 +63,9 @@ public class PricingEngine : IPricingEngine
         // Build breakdown
         foreach (var mod in modifications)
         {
-            var appliedAmount = mod.Apply(baseFee);
+            var appliedAmount = mod.Type == ModificationType.Flat
+                ? mod.Amount
+                : mod.Apply(baseFee);
             appliedMods.Add(new AppliedModification(mod.RuleName, mod.Description, appliedAmount));
         }
 
@@ -78,7 +80,24 @@ public class PricingEngine : IPricingEngine
                 finalFee = config.MaximumFee.Value;
         }
 
-        return new PricingResult(baseFee, finalFee, surgeMultiplier, surgeReason, appliedMods);
+        // Generate quote ID
+        var quoteId = GenerateQuoteId();
+        var expiresAt = DateTime.UtcNow.AddMinutes(QuoteExpiryMinutes);
+
+        return new PricingResult(
+            quoteId,
+            expiresAt,
+            baseFee,
+            finalFee,
+            surgeMultiplier,
+            surgeReason,
+            context.ThirdPartyQuote,
+            appliedMods);
+    }
+
+    private static string GenerateQuoteId()
+    {
+        return $"quote_{Guid.NewGuid():N}"[..24];
     }
 
     private (decimal baseFee, decimal finalFee, decimal surgeMultiplier, string? surgeReason)

@@ -9,6 +9,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\ProRouting\ProRouting.csproj" />
     <ProjectReference Include="..\Modules\Catalog\RallyAPI.Catalog.Endpoints\RallyAPI.Catalog.Endpoints.csproj" />
     <ProjectReference Include="..\Modules\Catalog\RallyAPI.Catalog.Infrastructure\RallyAPI.Catalog.Infrastructure.csproj" />
     <ProjectReference Include="..\RallyAPI.Infrastructure\RallyAPI.Infrastructure.csproj" />

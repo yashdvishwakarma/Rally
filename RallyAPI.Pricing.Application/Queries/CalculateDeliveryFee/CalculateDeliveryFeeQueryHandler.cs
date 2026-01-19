@@ -40,32 +40,50 @@ public class CalculateDeliveryFeeQueryHandler
             cancellationToken);
 
         // Build context
-        var context = new PricingContext(
-            RestaurantLatitude: request.RestaurantLatitude,
-            RestaurantLongitude: request.RestaurantLongitude,
-            CustomerLatitude: request.CustomerLatitude,
-            CustomerLongitude: request.CustomerLongitude,
-            OrderTime: DateTime.UtcNow,
-            DayOfWeek: DateTime.UtcNow.DayOfWeek,
-            OrderSubtotal: request.OrderSubtotal,
-            ItemCount: request.ItemCount,
-            RestaurantId: request.RestaurantId,
-            CustomerId: request.CustomerId,
-            Weather: weather,
-            CurrentOrdersPerHour: ordersPerHour,
-            PromoCode: request.PromoCode);
+        var context = new PricingContext
+        {
+            RestaurantLatitude = request.RestaurantLatitude,
+            RestaurantLongitude = request.RestaurantLongitude,
+            PickupPincode = request.RestaurantPincode,
+            CustomerLatitude = request.CustomerLatitude,
+            CustomerLongitude = request.CustomerLongitude,
+            DropPincode = request.CustomerPincode,
+            City = request.City,
+            OrderTime = DateTime.UtcNow,
+            DayOfWeek = DateTime.UtcNow.DayOfWeek,
+            OrderSubtotal = request.OrderSubtotal,
+            OrderWeight = request.OrderWeight,
+            ItemCount = request.ItemCount,
+            RestaurantId = request.RestaurantId,
+            CustomerId = request.CustomerId,
+            Weather = weather,
+            CurrentOrdersPerHour = ordersPerHour,
+            PromoCode = request.PromoCode
+        };
 
         // Calculate
         var result = await _pricingEngine.CalculateDeliveryFeeAsync(context, cancellationToken);
 
         // Map response
         var response = new DeliveryFeeResponse(
+            result.QuoteId,
+            result.ExpiresAt,
             result.BaseFee,
             result.FinalFee,
             result.SurgeMultiplier,
             result.PrimarySurgeReason,
             context.DistanceKm,
-            result.Breakdown.Select(b => new FeeBreakdownItem(b.RuleName, b.Description, b.Amount)).ToList());
+            result.ThirdPartyQuote != null
+                ? new ThirdPartyQuoteResponse(
+                    result.ThirdPartyQuote.QuoteId,
+                    result.ThirdPartyQuote.ProviderName,
+                    result.ThirdPartyQuote.Price,
+                    result.ThirdPartyQuote.EstimatedMinutes,
+                    result.ThirdPartyQuote.ExpiresAt)
+                : null,
+            result.Breakdown
+                .Select(b => new FeeBreakdownItem(b.RuleName, b.Description, b.Amount))
+                .ToList());
 
         return Result.Success(response);
     }

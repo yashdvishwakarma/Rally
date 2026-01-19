@@ -255,6 +255,42 @@
           }
         }
       }
+    },
+    "/api/test/raw-prorouting": {
+      "get": {
+        "tags": [
+          "Test"
+        ],
+        "operationId": "RawProRoutingTest",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/test/delivery-quote": {
+      "post": {
+        "tags": [
+          "Test"
+        ],
+        "operationId": "TestDeliveryQuote",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeliveryQuoteTestRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -284,6 +320,49 @@
           },
           "isDefault": {
             "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "DeliveryQuoteTestRequest": {
+        "type": "object",
+        "properties": {
+          "pickupLat": {
+            "type": "number",
+            "format": "double"
+          },
+          "pickupLng": {
+            "type": "number",
+            "format": "double"
+          },
+          "pickupPincode": {
+            "type": "string",
+            "nullable": true
+          },
+          "dropLat": {
+            "type": "number",
+            "format": "double"
+          },
+          "dropLng": {
+            "type": "number",
+            "format": "double"
+          },
+          "dropPincode": {
+            "type": "string",
+            "nullable": true
+          },
+          "city": {
+            "type": "string",
+            "nullable": true
+          },
+          "orderAmount": {
+            "type": "number",
+            "format": "double"
+          },
+          "orderWeight": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
           }
         },
         "additionalProperties": false
