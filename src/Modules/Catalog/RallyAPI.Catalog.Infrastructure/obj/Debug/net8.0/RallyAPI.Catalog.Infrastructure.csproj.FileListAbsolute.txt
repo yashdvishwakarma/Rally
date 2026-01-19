@@ -1,9 +1,3 @@
-C:\Users\vishw\source\repos\Rally\src\Modules\Catalog\RallyAPI.Catalog.Infrastructure\obj\Debug\net8.0\RallyAPI.Catalog.Infrastructure.csproj.AssemblyReference.cache
-C:\Users\vishw\source\repos\Rally\src\Modules\Catalog\RallyAPI.Catalog.Infrastructure\obj\Debug\net8.0\RallyAPI.Catalog.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
-C:\Users\vishw\source\repos\Rally\src\Modules\Catalog\RallyAPI.Catalog.Infrastructure\obj\Debug\net8.0\RallyAPI.Catalog.Infrastructure.AssemblyInfoInputs.cache
-C:\Users\vishw\source\repos\Rally\src\Modules\Catalog\RallyAPI.Catalog.Infrastructure\obj\Debug\net8.0\RallyAPI.Catalog.Infrastructure.AssemblyInfo.cs
-C:\Users\vishw\source\repos\Rally\src\Modules\Catalog\RallyAPI.Catalog.Infrastructure\obj\Debug\net8.0\RallyAPI.Catalog.Infrastructure.csproj.CoreCompileInputs.cache
-C:\Users\vishw\source\repos\Rally\src\Modules\Catalog\RallyAPI.Catalog.Infrastructure\obj\Debug\net8.0\RallyAPI.Catalog.Infrastructure.sourcelink.json
 C:\Users\vishw\source\repos\Rally\src\Modules\Catalog\RallyAPI.Catalog.Infrastructure\bin\Debug\net8.0\RallyAPI.Catalog.Infrastructure.deps.json
 C:\Users\vishw\source\repos\Rally\src\Modules\Catalog\RallyAPI.Catalog.Infrastructure\bin\Debug\net8.0\RallyAPI.Catalog.Infrastructure.dll
 C:\Users\vishw\source\repos\Rally\src\Modules\Catalog\RallyAPI.Catalog.Infrastructure\bin\Debug\net8.0\RallyAPI.Catalog.Infrastructure.pdb
@@ -13,6 +7,12 @@ C:\Users\vishw\source\repos\Rally\src\Modules\Catalog\RallyAPI.Catalog.Infrastru
 C:\Users\vishw\source\repos\Rally\src\Modules\Catalog\RallyAPI.Catalog.Infrastructure\bin\Debug\net8.0\RallyAPI.Catalog.Application.pdb
 C:\Users\vishw\source\repos\Rally\src\Modules\Catalog\RallyAPI.Catalog.Infrastructure\bin\Debug\net8.0\RallyAPI.Catalog.Domain.pdb
 C:\Users\vishw\source\repos\Rally\src\Modules\Catalog\RallyAPI.Catalog.Infrastructure\bin\Debug\net8.0\RallyAPI.SharedKernel.pdb
+C:\Users\vishw\source\repos\Rally\src\Modules\Catalog\RallyAPI.Catalog.Infrastructure\obj\Debug\net8.0\RallyAPI.Catalog.Infrastructure.csproj.AssemblyReference.cache
+C:\Users\vishw\source\repos\Rally\src\Modules\Catalog\RallyAPI.Catalog.Infrastructure\obj\Debug\net8.0\RallyAPI.Catalog.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\vishw\source\repos\Rally\src\Modules\Catalog\RallyAPI.Catalog.Infrastructure\obj\Debug\net8.0\RallyAPI.Catalog.Infrastructure.AssemblyInfoInputs.cache
+C:\Users\vishw\source\repos\Rally\src\Modules\Catalog\RallyAPI.Catalog.Infrastructure\obj\Debug\net8.0\RallyAPI.Catalog.Infrastructure.AssemblyInfo.cs
+C:\Users\vishw\source\repos\Rally\src\Modules\Catalog\RallyAPI.Catalog.Infrastructure\obj\Debug\net8.0\RallyAPI.Catalog.Infrastructure.csproj.CoreCompileInputs.cache
+C:\Users\vishw\source\repos\Rally\src\Modules\Catalog\RallyAPI.Catalog.Infrastructure\obj\Debug\net8.0\RallyAPI.Catalog.Infrastructure.sourcelink.json
 C:\Users\vishw\source\repos\Rally\src\Modules\Catalog\RallyAPI.Catalog.Infrastructure\obj\Debug\net8.0\RallyAPI.9DE14807.Up2Date
 C:\Users\vishw\source\repos\Rally\src\Modules\Catalog\RallyAPI.Catalog.Infrastructure\obj\Debug\net8.0\RallyAPI.Catalog.Infrastructure.dll
 C:\Users\vishw\source\repos\Rally\src\Modules\Catalog\RallyAPI.Catalog.Infrastructure\obj\Debug\net8.0\refint\RallyAPI.Catalog.Infrastructure.dll

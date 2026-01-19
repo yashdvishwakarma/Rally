@@ -8,9 +8,13 @@ namespace RallyAPI.Pricing.Application.Queries.CalculateDeliveryFee;
 public record CalculateDeliveryFeeQuery(
     double RestaurantLatitude,
     double RestaurantLongitude,
+    string RestaurantPincode,
     double CustomerLatitude,
     double CustomerLongitude,
+    string CustomerPincode,
+    string City,
     decimal OrderSubtotal,
+    decimal? OrderWeight,
     int ItemCount,
     Guid RestaurantId,
     Guid? CustomerId = null,

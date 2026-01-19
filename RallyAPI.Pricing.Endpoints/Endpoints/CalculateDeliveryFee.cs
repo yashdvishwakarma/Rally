@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿// RallyAPI.Pricing.Endpoints/Endpoints/CalculateDeliveryFee.cs
+using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
@@ -13,8 +14,8 @@ public class CalculateDeliveryFee : IEndpoint
     {
         app.MapPost("/api/pricing/delivery-fee", HandleAsync)
             .WithTags("Pricing")
-            .WithSummary("Calculate delivery fee")
-            .WithDescription("Returns delivery fee with breakdown of all applied rules")
+            .WithSummary("Calculate delivery fee with quote")
+            .WithDescription("Returns delivery fee with quote ID valid for 10 minutes")
             .AllowAnonymous();
     }
 
@@ -26,10 +27,14 @@ public class CalculateDeliveryFee : IEndpoint
         var query = new CalculateDeliveryFeeQuery(
             request.RestaurantLatitude,
             request.RestaurantLongitude,
+            request.RestaurantPincode,
             request.CustomerLatitude,
             request.CustomerLongitude,
+            request.CustomerPincode,
+            request.City,
             request.OrderSubtotal,
-            ItemCount: 1, // Can be added to request
+            request.OrderWeight,
+            ItemCount: 1,
             request.RestaurantId,
             request.CustomerId,
             request.PromoCode);

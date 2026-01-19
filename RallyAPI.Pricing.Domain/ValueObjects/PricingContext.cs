@@ -1,33 +1,57 @@
-﻿using RallyAPI.Pricing.Domain.Enums;
+﻿// RallyAPI.Pricing.Domain/ValueObjects/PricingContext.cs
+using RallyAPI.Pricing.Domain.Enums;
 
 namespace RallyAPI.Pricing.Domain.ValueObjects;
 
-public record PricingContext(
+public class PricingContext
+{
     // Location
-    double RestaurantLatitude,
-    double RestaurantLongitude,
-    double CustomerLatitude,
-    double CustomerLongitude,
+    public double RestaurantLatitude { get; init; }
+    public double RestaurantLongitude { get; init; }
+    public double CustomerLatitude { get; init; }
+    public double CustomerLongitude { get; init; }
+
+    // Pincodes (needed for 3PL)
+    public string? PickupPincode { get; init; }
+    public string? DropPincode { get; init; }
+    public string? City { get; init; }
 
     // Time
-    DateTime OrderTime,
-    DayOfWeek DayOfWeek,
+    public DateTime OrderTime { get; init; }
+    public DayOfWeek DayOfWeek { get; init; }
 
     // Order Info
-    decimal OrderSubtotal,
-    int ItemCount,
-    Guid RestaurantId,
-    Guid? CustomerId,
+    public decimal OrderSubtotal { get; init; }
+    public int ItemCount { get; init; }
+    public decimal? OrderWeight { get; init; }
+    public Guid RestaurantId { get; init; }
+    public Guid? CustomerId { get; init; }
 
     // External Factors
-    WeatherCondition? Weather,
-    int? CurrentOrdersPerHour,  // For demand calculation
+    public WeatherCondition? Weather { get; init; }
+    public int? CurrentOrdersPerHour { get; init; }
 
     // Optional
-    string? PromoCode)
-{
-    // Calculated property
+    public string? PromoCode { get; init; }
+
+    // 3PL Quote (set by rule)
+    public DeliveryQuote? ThirdPartyQuote { get; private set; }
+
+    // Calculated
     public double DistanceKm => CalculateDistance();
+
+    public void SetThirdPartyQuote(
+        string quoteId,
+        string providerName,
+        decimal price,
+        int estimatedMinutes)
+    {
+        ThirdPartyQuote = DeliveryQuote.CreateWithExpiry(
+            quoteId,
+            providerName,
+            price,
+            estimatedMinutes);
+    }
 
     private double CalculateDistance()
     {
@@ -37,7 +61,8 @@ public record PricingContext(
         var dLon = ToRadians(CustomerLongitude - RestaurantLongitude);
 
         var a = Math.Sin(dLat / 2) * Math.Sin(dLat / 2) +
-                Math.Cos(ToRadians(RestaurantLatitude)) * Math.Cos(ToRadians(CustomerLatitude)) *
+                Math.Cos(ToRadians(RestaurantLatitude)) *
+                Math.Cos(ToRadians(CustomerLatitude)) *
                 Math.Sin(dLon / 2) * Math.Sin(dLon / 2);
 
         var c = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
