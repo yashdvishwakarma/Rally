@@ -1,0 +1,46 @@
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using RallyAPI.Orders.Application.Abstractions;
+using RallyAPI.Orders.Domain.Abstractions;
+using RallyAPI.Orders.Infrastructure.Repositories;
+using RallyAPI.Orders.Infrastructure.Services;
+
+namespace RallyAPI.Orders.Infrastructure;
+
+public static class DependencyInjection
+{
+    public static IServiceCollection AddOrdersInfrastructure(
+        this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        // DbContext
+        var connectionString = configuration.GetConnectionString("DefaultConnection");
+        services.AddDbContext<OrdersDbContext>(options =>
+        {
+            options.UseNpgsql(connectionString, npgsqlOptions =>
+            {
+                npgsqlOptions.MigrationsHistoryTable("__EFMigrationsHistory", "orders");
+            });
+        });
+
+        // Repositories
+        services.AddScoped<IOrderRepository, OrderRepository>();
+
+        // Unit of Work
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+        // Services
+        services.AddScoped<IOrderNumberGenerator, OrderNumberGenerator>();
+        services.AddScoped<IOrderValidationService, OrderValidationService>();
+        services.AddScoped<IOrderPricingService, OrderPricingService>();
+        services.AddScoped<IDateTimeProvider, DateTimeProvider>();
+        services.AddScoped<ICurrentUserService, CurrentUserService>();
+
+        // Options
+        services.Configure<PricingOptions>(
+            configuration.GetSection(PricingOptions.SectionName));
+
+        return services;
+    }
+}
