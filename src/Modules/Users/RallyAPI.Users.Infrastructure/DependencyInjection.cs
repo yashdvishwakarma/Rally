@@ -5,6 +5,7 @@ using RallyAPI.Users.Application.Abstractions;
 using RallyAPI.Users.Infrastructure.Persistence;
 using RallyAPI.Users.Infrastructure.Persistence.Repositories;
 using RallyAPI.Users.Infrastructure.Services;
+using RallyAPI.SharedKernel.Abstractions.Riders;
 
 namespace RallyAPI.Users.Infrastructure;
 
@@ -50,6 +51,11 @@ public static class DependencyInjection
         services.AddScoped<IRestaurantRepository, RestaurantRepository>();
         services.AddScoped<IAdminRepository, AdminRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+
+        // Rider services for cross-module communication
+        services.AddScoped<IRiderQueryService, RiderQueryService>();
+        services.AddScoped<IRiderCommandService, RiderCommandService>();
 
         return services;
     }

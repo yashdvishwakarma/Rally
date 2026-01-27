@@ -1,0 +1,8 @@
+C:\Users\vishw\source\repos\Rally\src\RallyAPI.Host\obj\Debug\net8.0\RallyAPI.Host.csproj.AssemblyReference.cache
+C:\Users\vishw\source\repos\Rally\src\RallyAPI.Host\obj\Debug\net8.0\rpswa.dswa.cache.json
+C:\Users\vishw\source\repos\Rally\src\RallyAPI.Host\obj\Debug\net8.0\RallyAPI.Host.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\vishw\source\repos\Rally\src\RallyAPI.Host\obj\Debug\net8.0\RallyAPI.Host.AssemblyInfoInputs.cache
+C:\Users\vishw\source\repos\Rally\src\RallyAPI.Host\obj\Debug\net8.0\RallyAPI.Host.AssemblyInfo.cs
+C:\Users\vishw\source\repos\Rally\src\RallyAPI.Host\obj\Debug\net8.0\RallyAPI.Host.csproj.CoreCompileInputs.cache
+C:\Users\vishw\source\repos\Rally\src\RallyAPI.Host\obj\Debug\net8.0\RallyAPI.Host.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\vishw\source\repos\Rally\src\RallyAPI.Host\obj\Debug\net8.0\RallyAPI.Host.sourcelink.json
