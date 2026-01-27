@@ -133,6 +133,23 @@ namespace RallyAPI.Users.Infrastructure.Persistence.Configurations
 
             // Ignore domain events
             builder.Ignore(r => r.DomainEvents);
+
+            builder.Property(r => r.CurrentDeliveryId)
+    .HasColumnName("current_delivery_id")
+    .IsRequired(false);
+
+            builder.Property(r => r.CurrentDeliveryAssignedAt)
+                .HasColumnName("current_delivery_assigned_at")
+                .IsRequired(false);
+
+            // Add index for finding available riders
+            builder.HasIndex(r => new { r.IsOnline, r.IsActive, r.CurrentDeliveryId })
+                .HasDatabaseName("ix_riders_availability");
+
+            // Add index for location-based queries
+            builder.HasIndex(r => new { r.CurrentLatitude, r.CurrentLongitude })
+                .HasDatabaseName("ix_riders_location")
+                .HasFilter("current_latitude IS NOT NULL AND current_longitude IS NOT NULL");
         }
     }
 }

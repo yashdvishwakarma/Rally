@@ -19,6 +19,15 @@ public sealed class Rider : AggregateRoot
     public decimal? CurrentLatitude { get; private set; }
     public decimal? CurrentLongitude { get; private set; }
     public DateTime? LastLocationUpdate { get; private set; }
+    /// <summary>
+    /// Current delivery assignment. Null if rider is available.
+    /// </summary>
+    public Guid? CurrentDeliveryId { get; private set; }
+
+    /// <summary>
+    /// When the current delivery was assigned.
+    /// </summary>
+    public DateTime? CurrentDeliveryAssignedAt { get; private set; }
 
     // EF Core
     private Rider() { }
@@ -144,4 +153,134 @@ public sealed class Rider : AggregateRoot
         MarkAsUpdated();
         return Result.Success();
     }
+
+    // ─── ADD THESE METHODS (near GoOnline/GoOffline methods) ───
+
+    /// <summary>
+    /// Assigns a delivery to this rider.
+    /// Rider must be online, active, KYC verified, and not already on a delivery.
+    /// </summary>
+    /// <param name="deliveryRequestId">The delivery request to assign</param>
+    /// <returns>Success or failure with error</returns>
+    public Result AssignDelivery(Guid deliveryRequestId)
+    {
+        // Validate rider can accept deliveries
+        if (!IsActive)
+            return Result.Failure(Error.Validation(
+                "Rider.NotActive",
+                "Inactive rider cannot be assigned deliveries."));
+
+        if (KycStatus != KycStatus.Verified)
+            return Result.Failure(Error.Validation(
+                "Rider.KycNotVerified",
+                "Rider KYC must be verified to accept deliveries."));
+
+        if (!IsOnline)
+            return Result.Failure(Error.Validation(
+                "Rider.NotOnline",
+                "Rider must be online to accept deliveries."));
+
+        if (CurrentDeliveryId.HasValue)
+            return Result.Failure(Error.Validation(
+                "Rider.AlreadyOnDelivery",
+                $"Rider is already on delivery {CurrentDeliveryId.Value}."));
+
+        // Assign the delivery
+        CurrentDeliveryId = deliveryRequestId;
+        CurrentDeliveryAssignedAt = DateTime.UtcNow;
+
+        MarkAsUpdated();
+
+        // Optionally raise domain event
+        // AddDomainEvent(new RiderDeliveryAssignedEvent(Id, deliveryRequestId));
+
+        return Result.Success();
+    }
+
+    /// <summary>
+    /// Clears the current delivery assignment.
+    /// Called when delivery is completed, failed, or reassigned.
+    /// </summary>
+    /// <param name="deliveryRequestId">Expected delivery ID (for validation)</param>
+    /// <returns>Success or failure with error</returns>
+    public Result ClearDelivery(Guid deliveryRequestId)
+    {
+        if (!CurrentDeliveryId.HasValue)
+            return Result.Failure(Error.Validation(
+                "Rider.NoActiveDelivery",
+                "Rider has no active delivery to clear."));
+
+        if (CurrentDeliveryId.Value != deliveryRequestId)
+            return Result.Failure(Error.Validation(
+                "Rider.DeliveryMismatch",
+                $"Rider's current delivery {CurrentDeliveryId.Value} doesn't match {deliveryRequestId}."));
+
+        CurrentDeliveryId = null;
+        CurrentDeliveryAssignedAt = null;
+
+        MarkAsUpdated();
+
+        // Optionally raise domain event
+        // AddDomainEvent(new RiderDeliveryClearedEvent(Id, deliveryRequestId));
+
+        return Result.Success();
+    }
+
+    /// <summary>
+    /// Force clears delivery without validation.
+    /// Use only for admin/system operations.
+    /// </summary>
+    public Result ForceClearDelivery()
+    {
+        CurrentDeliveryId = null;
+        CurrentDeliveryAssignedAt = null;
+
+        MarkAsUpdated();
+
+        return Result.Success();
+    }
+
+    /// <summary>
+    /// Checks if rider is available for new deliveries.
+    /// </summary>
+    public bool IsAvailableForDelivery()
+    {
+        return IsActive
+            && IsOnline
+            && KycStatus == KycStatus.Verified
+            && !CurrentDeliveryId.HasValue;
+    }
+
+    ///// <summary>
+    ///// Updates rider's current location.
+    ///// </summary>
+    ///// <param name="latitude">Current latitude</param>
+    ///// <param name="longitude">Current longitude</param>
+    ///// <returns>Success or failure</returns>
+    //public Result UpdateLocation(decimal latitude, decimal longitude)
+    //{
+    //    if (!IsOnline)
+    //        return Result.Failure(Error.Validation(
+    //            "Rider.NotOnline",
+    //            "Cannot update location while offline."));
+
+    //    // Basic validation
+    //    if (latitude < -90 || latitude > 90)
+    //        return Result.Failure(Error.Validation(
+    //            "Rider.InvalidLatitude",
+    //            "Latitude must be between -90 and 90."));
+
+    //    if (longitude < -180 || longitude > 180)
+    //        return Result.Failure(Error.Validation(
+    //            "Rider.InvalidLongitude",
+    //            "Longitude must be between -180 and 180."));
+
+    //    CurrentLatitude = latitude;
+    //    CurrentLongitude = longitude;
+    //    LastLocationUpdate = DateTime.UtcNow;
+
+    //    MarkAsUpdated();
+
+    //    return Result.Success();
+    //}
 }

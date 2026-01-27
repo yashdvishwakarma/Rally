@@ -102,7 +102,7 @@ public sealed class OrderRepository : IOrderRepository
     {
         var activeStatuses = new[]
         {
-            OrderStatus.Pending,
+            OrderStatus.Paid,
             OrderStatus.Confirmed,
             OrderStatus.Preparing,
             OrderStatus.ReadyForPickup,
@@ -151,7 +151,7 @@ public sealed class OrderRepository : IOrderRepository
     {
         var activeStatuses = new[]
         {
-            OrderStatus.Pending,
+            OrderStatus.Paid,
             OrderStatus.Confirmed,
             OrderStatus.Preparing,
             OrderStatus.ReadyForPickup,

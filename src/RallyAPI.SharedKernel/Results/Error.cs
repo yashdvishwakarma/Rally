@@ -29,6 +29,9 @@ namespace RallyAPI.SharedKernel.Results
         public static Error Validation(string message) =>
             new("Validation.Error", message);
 
+        public static Error Validation(string message,string detail) =>
+            new("Validation.Error", message);
+
         public static Error Conflict(string message) =>
             new("Conflict.Error", message);
 
