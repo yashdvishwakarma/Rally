@@ -7,6 +7,7 @@ using RallyAPI.Users.Infrastructure.Persistence.Repositories;
 using RallyAPI.Users.Infrastructure.Services;
 using RallyAPI.SharedKernel.Abstractions.Riders;
 using Microsoft.EntityFrameworkCore.Diagnostics;
+using StackExchange.Redis;
 namespace RallyAPI.Users.Infrastructure;
 
 public static class DependencyInjection
@@ -61,6 +62,7 @@ public static class DependencyInjection
         services.AddScoped<IRestaurantRepository, RestaurantRepository>();
         services.AddScoped<IAdminRepository, AdminRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
+        services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
 
 
         // Rider services for cross-module communication
@@ -81,7 +83,12 @@ public static class DependencyInjection
         // Services
         services.AddScoped<IJwtProvider, JwtProvider>();
         services.AddSingleton<IPasswordHasher, PasswordHasher>();
-        services.AddSingleton<IOtpService, OtpService>();
+        // Redis
+        var redisConnection = configuration.GetConnectionString("Redis")!;
+        services.AddSingleton<IConnectionMultiplexer>(
+            ConnectionMultiplexer.Connect(redisConnection));
+
+        services.AddScoped<IOtpService, OtpService>();
 
         return services;
     }

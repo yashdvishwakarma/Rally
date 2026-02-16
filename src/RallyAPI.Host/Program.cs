@@ -11,9 +11,12 @@ using RallyAPI.Pricing.Infrastructure;
 using RallyAPI.SharedKernel.Abstractions.Delivery;
 using RallyAPI.SharedKernel.Extensions;
 using RallyAPI.SharedKernel.Infrastructure;
+using RallyAPI.Users.Domain.Entities;
 using RallyAPI.Users.Endpoints;
+using System.Reflection;
+using System.Security.Cryptography;
 using System.Text;
-using RallyAPI.Host;
+using System.Threading.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -40,10 +43,14 @@ builder.Services.AddDeliveryModule(builder.Configuration);
 
 
 // Add Authentication
+var jwtSettings = builder.Configuration.GetSection("JwtSettings");
+var publicKeyText = File.ReadAllText(jwtSettings["PublicKeyPath"]!);
+var rsa = RSA.Create();
+rsa.ImportFromPem(publicKeyText);
+
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
-        var jwtSettings = builder.Configuration.GetSection("JwtSettings");
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuer = true,
@@ -52,8 +59,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateIssuerSigningKey = true,
             ValidIssuer = jwtSettings["Issuer"],
             ValidAudience = jwtSettings["Audience"],
-            IssuerSigningKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(jwtSettings["SecretKey"]!))
+            IssuerSigningKey = new RsaSecurityKey(rsa)
         };
     });
 
@@ -79,26 +85,48 @@ builder.Services.AddPricingInfrastructure(builder.Configuration);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Add DataSeeder
-builder.Services.AddScoped<DataSeeder>();
+
+// Add Rate Limiting
+builder.Services.AddRateLimiter(options =>
+{
+    // Rate limit for OTP requests: 3 per 10 minutes per IP
+    options.AddPolicy("otp", context =>
+        RateLimitPartition.GetSlidingWindowLimiter(
+            context.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+            _ => new SlidingWindowRateLimiterOptions
+            {
+                PermitLimit = 3,
+                Window = TimeSpan.FromMinutes(10),
+                SegmentsPerWindow = 2
+            }));
+
+    // Rate limit for login: 5 per 15 minutes per IP
+    options.AddPolicy("login", context =>
+        RateLimitPartition.GetSlidingWindowLimiter(
+            context.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+            _ => new SlidingWindowRateLimiterOptions
+            {
+                PermitLimit = 5,
+                Window = TimeSpan.FromMinutes(15),
+                SegmentsPerWindow = 3
+            }));
+
+    // Rate limit for token refresh: 10 per minute per IP
+    options.AddPolicy("refresh", context =>
+        RateLimitPartition.GetSlidingWindowLimiter(
+            context.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+            _ => new SlidingWindowRateLimiterOptions
+            {
+                PermitLimit = 10,
+                Window = TimeSpan.FromMinutes(1),
+                SegmentsPerWindow = 2
+            }));
+
+    options.RejectionStatusCode = 429; // Too Many Requests
+});
+
 
 var app = builder.Build();
-
-// Seed Database
-try
-{
-    using (var scope = app.Services.CreateScope())
-    {
-        var seeder = scope.ServiceProvider.GetRequiredService<DataSeeder>();
-        await seeder.SeedAsync();
-    }
-}
-catch (Exception ex)
-{
-    Console.WriteLine("CRITICAL ERROR IN SEEDING:");
-    Console.WriteLine(ex.ToString());
-    throw; // Rethrow to stop startup
-}
 
 // Add Global Exception Handler (early in pipeline!)
 app.UseGlobalExceptionHandler();
@@ -111,7 +139,20 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseAuthentication();
+app.UseRateLimiter();
 app.UseAuthorization();
+
+
+/**
+
+Now we need to apply these policies to the endpoints. Paste your endpoint files so I know the exact methods to add `.RequireRateLimiting()` to:
+```
+src / Modules / Users / RallyAPI.Users.Endpoints / Customers / SendOtp.cs
+src / Modules / Users / RallyAPI.Users.Endpoints / Admins / Login.cs
+src / Modules / Users / RallyAPI.Users.Endpoints / Restaurants / Login.cs
+src / Modules / Users / RallyAPI.Users.Endpoints / Riders / SendOtp.cs
+**/
+
 
 // Map endpoints
 app.MapUsersEndpoints();
