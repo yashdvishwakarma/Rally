@@ -13,7 +13,8 @@ public class SendOtp : IEndpoint
         app.MapPost("/api/customers/otp/send", HandleAsync)
             .WithName("CustomerSendOtp")
             .WithTags("Customers")
-            .AllowAnonymous();
+            .AllowAnonymous()
+         .RequireRateLimiting("otp");
     }
 
     public record SendCustomerOtpRequest(string PhoneNumber);

@@ -13,7 +13,8 @@ public class VerifyOtp : IEndpoint
         app.MapPost("/api/riders/otp/verify", HandleAsync)
             .WithTags("Riders")
             .WithSummary("Verify OTP and get token")
-            .AllowAnonymous();
+            .AllowAnonymous()
+.RequireRateLimiting("otp");
     }
 
     private static async Task<IResult> HandleAsync(

@@ -23,6 +23,8 @@ namespace RallyAPI.Users.Infrastructure.Persistence
         public DbSet<Restaurant> Restaurants => Set<Restaurant>();
         public DbSet<Admin> Admins => Set<Admin>();
 
+        public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

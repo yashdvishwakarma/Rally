@@ -490,3 +490,7 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
+
+
+Keys/
+*.pem

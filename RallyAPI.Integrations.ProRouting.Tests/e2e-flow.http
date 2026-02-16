@@ -1,0 +1,328 @@
+### ============================================================
+### RallyAPI — E2E Test Flow
+### Tests the complete order lifecycle:
+### Login → Place Order → Confirm → Dispatch → Assign → 
+### PickUp → Deliver → Verify
+### ============================================================
+### 
+### PREREQUISITES:
+### 1. Run seed-test-data.sql first
+### 2. App running on https://localhost:5001 (or adjust @baseUrl)
+### 3. All Phases 0-2 completed (event handlers wired up)
+###
+### HOW TO USE:
+### - In VS Code: Install "REST Client" extension
+### - In Rider: Use built-in HTTP client
+### - Run requests sequentially (top to bottom)
+### - Copy values from responses into variables as noted
+### ============================================================
+
+@baseUrl = https://localhost:7041
+
+
+### ============================================================
+### STEP 1: Customer Login — Send OTP
+### ============================================================
+POST {{baseUrl}}/api/customers/otp/send
+Content-Type: application/json
+
+{"phoneNumber": "9876543210"}
+
+### Expected: 200 OK
+### In dev mode, OTP is likely "123456" or logged to console
+
+
+### ============================================================
+### STEP 2: Customer Login — Verify OTP & Get JWT
+### ============================================================
+POST {{baseUrl}}/api/customers/otp/verify
+Content-Type: application/json
+
+{"phoneNumber": "9876543210", "otp": "123456"}
+
+### Expected: 200 OK with JWT token
+### >>> COPY the token value into @customerToken below
+@customerToken = dummy-token
+
+
+### ============================================================
+### STEP 3: Restaurant Owner Login — Send OTP
+### ============================================================
+POST {{baseUrl}}/api/users/send-otp
+Content-Type: application/json
+
+{"phoneNumber": "+919876500001"}
+
+
+### ============================================================
+### STEP 4: Restaurant Owner Login — Verify OTP & Get JWT
+### ============================================================
+POST {{baseUrl}}/api/users/verify-otp
+Content-Type: application/json
+
+{"phoneNumber": "+919876500001", "otp": "123456"}
+
+### >>> COPY the token into @restaurantToken below
+@restaurantToken = PASTE_RESTAURANT_JWT_HERE
+
+
+### ============================================================
+### STEP 5: Rider Login — Send OTP
+### ============================================================
+POST {{baseUrl}}/api/users/send-otp
+Content-Type: application/json
+
+{"phoneNumber": "+919876500002"}
+
+
+### ============================================================
+### STEP 6: Rider Login — Verify OTP & Get JWT
+### ============================================================
+POST {{baseUrl}}/api/users/verify-otp
+Content-Type: application/json
+
+{"phoneNumber": "+919876500002", "otp": "123456"}
+
+### >>> COPY the token into @riderToken below
+@riderToken = PASTE_RIDER_JWT_HERE
+
+
+### ============================================================
+### STEP 7: Admin Login — Send OTP
+### ============================================================
+POST {{baseUrl}}/api/users/send-otp
+Content-Type: application/json
+
+{"phoneNumber": "+919876500003"}
+
+
+### ============================================================
+### STEP 8: Admin Login — Verify OTP & Get JWT
+### ============================================================
+POST {{baseUrl}}/api/users/verify-otp
+Content-Type: application/json
+
+{"phoneNumber": "+919876500003", "otp": "123456"}
+
+### >>> COPY the token into @adminToken below
+@adminToken = PASTE_ADMIN_JWT_HERE
+
+
+### ============================================================
+### STEP 9: Browse Restaurant Menu
+### ============================================================
+@restaurantId = 00000000-0000-0000-0000-000000000010
+
+GET {{baseUrl}}/api/catalog/restaurants/{{restaurantId}}/menus
+Authorization: Bearer {{customerToken}}
+
+### Expected: 200 OK with menu items (Butter Chicken, Paneer Tikka, Garlic Naan)
+### Note the menu item IDs for the order
+
+
+### ============================================================
+### STEP 10: Get Delivery Price Quote
+### ============================================================
+### Pickup: Koramangala restaurant | Delivery: Indiranagar customer
+POST {{baseUrl}}/api/delivery/quote
+Authorization: Bearer {{customerToken}}
+Content-Type: application/json
+
+{
+  "pickupLatitude": 12.9352,
+  "pickupLongitude": 77.6245,
+  "deliveryLatitude": 12.9784,
+  "deliveryLongitude": 77.6408,
+  "restaurantId": "00000000-0000-0000-0000-000000000010"
+}
+
+### Expected: 200 OK with quoteId and fee breakdown
+### >>> COPY the quoteId into @quoteId below
+@quoteId = PASTE_QUOTE_ID_HERE
+
+
+### ============================================================
+### STEP 11: Place Order
+### ============================================================
+@menuItem1Id = 00000000-0000-0000-0000-000000000031
+@menuItem2Id = 00000000-0000-0000-0000-000000000032
+@menuItem3Id = 00000000-0000-0000-0000-000000000033
+
+POST {{baseUrl}}/api/orders
+Authorization: Bearer {{customerToken}}
+Content-Type: application/json
+
+{
+  "restaurantId": "{{restaurantId}}",
+  "deliveryAddress": {
+    "street": "100 Feet Road, Indiranagar",
+    "city": "Bengaluru",
+    "state": "Karnataka",
+    "zipCode": "560038",
+    "latitude": 12.9784,
+    "longitude": 77.6408
+  },
+  "items": [
+    {
+      "menuItemId": "{{menuItem1Id}}",
+      "menuItemName": "Butter Chicken",
+      "quantity": 1,
+      "unitPrice": 280.00
+    },
+    {
+      "menuItemId": "{{menuItem3Id}}",
+      "menuItemName": "Garlic Naan",
+      "quantity": 2,
+      "unitPrice": 60.00
+    }
+  ],
+  "quoteId": "{{quoteId}}",
+  "specialInstructions": "Extra spicy please"
+}
+
+### Expected: 201 Created with orderId
+### >>> COPY the orderId into @orderId below
+@orderId = PASTE_ORDER_ID_HERE
+
+
+### ============================================================
+### STEP 12: Check Order Status (should be "Placed")
+### ============================================================
+GET {{baseUrl}}/api/orders/{{orderId}}
+Authorization: Bearer {{customerToken}}
+
+### Expected: Status = "Placed" or "Pending"
+
+
+### ============================================================
+### STEP 13: Restaurant Confirms Order 🔥 KEY STEP
+### ============================================================
+### This triggers the ENTIRE event chain:
+###   OrderConfirmedEvent (domain)
+###   → OrderConfirmedDomainEventHandler (Phase 1 bridge)
+###   → OrderConfirmedIntegrationEvent
+###   → Delivery creates DeliveryRequest
+PUT {{baseUrl}}/api/orders/{{orderId}}/confirm
+Authorization: Bearer {{restaurantToken}}
+Content-Type: application/json
+
+{
+  "estimatedPrepTimeMinutes": 20
+}
+
+### Expected: 200 OK, Order status = "Confirmed"
+
+
+### ============================================================
+### STEP 14: Verify DeliveryRequest Was Created ✅ Phase 1 Proof
+### ============================================================
+GET {{baseUrl}}/api/delivery/requests?orderId={{orderId}}
+Authorization: Bearer {{adminToken}}
+
+### Expected: 200 OK with a DeliveryRequest for this orderId
+### >>> COPY the deliveryRequestId into @deliveryRequestId below
+@deliveryRequestId = PASTE_DELIVERY_REQUEST_ID_HERE
+
+
+### ============================================================
+### STEP 15: Restaurant Marks Order Ready for Pickup
+### ============================================================
+PUT {{baseUrl}}/api/orders/{{orderId}}/ready
+Authorization: Bearer {{restaurantToken}}
+
+### Expected: 200 OK, triggers OrderReadyForPickupIntegrationEvent
+### This kicks off rider dispatch in the Delivery module
+
+
+### ============================================================
+### STEP 16: Admin Triggers Dispatch (if not auto-dispatched)
+### ============================================================
+### The dispatch orchestrator should find our seeded rider
+### (online, KYC-approved, within search radius)
+POST {{baseUrl}}/api/delivery/requests/{{deliveryRequestId}}/dispatch
+Authorization: Bearer {{adminToken}}
+
+### Expected: 200 OK, rider dispatch process begins
+
+
+### ============================================================
+### STEP 17: Check Order — Should Show Rider Info ✅ Phase 2 Proof
+### ============================================================
+GET {{baseUrl}}/api/orders/{{orderId}}
+Authorization: Bearer {{customerToken}}
+
+### Expected: riderId, riderName, riderPhone populated
+### ✅ Proves DeliveryRiderAssignedEventHandler works!
+
+
+### ============================================================
+### STEP 18: Rider Marks Picked Up
+### ============================================================
+PUT {{baseUrl}}/api/delivery/requests/{{deliveryRequestId}}/pickup
+Authorization: Bearer {{riderToken}}
+
+### Expected: 200 OK
+
+
+### ============================================================
+### STEP 19: Check Order — Should be "PickedUp"
+### ============================================================
+GET {{baseUrl}}/api/orders/{{orderId}}
+Authorization: Bearer {{customerToken}}
+
+### Expected: Status = "PickedUp"
+### ✅ Proves DeliveryPickedUpEventHandler works!
+
+
+### ============================================================
+### STEP 20: Rider Marks Delivered 🎯 FINAL ACTION
+### ============================================================
+PUT {{baseUrl}}/api/delivery/requests/{{deliveryRequestId}}/deliver
+Authorization: Bearer {{riderToken}}
+
+### Expected: 200 OK
+
+
+### ============================================================
+### STEP 21: FINAL CHECK — Order Status = "Delivered" 🎉
+### ============================================================
+GET {{baseUrl}}/api/orders/{{orderId}}
+Authorization: Bearer {{customerToken}}
+
+### 🎉🎉🎉 Expected: Status = "Delivered", rider info attached
+### THE E2E FLOW IS COMPLETE!
+
+
+### ============================================================
+###                    FAILURE PATH TESTS
+### ============================================================
+
+### --- Cancel Order (before confirmation) ---
+### Place a fresh order, then:
+# PUT {{baseUrl}}/api/orders/{{newOrderId}}/cancel
+# Authorization: Bearer {{customerToken}}
+# Content-Type: application/json
+# {"reason": "Changed my mind"}
+
+### --- Reject Order (restaurant rejects) ---
+# PUT {{baseUrl}}/api/orders/{{newOrderId}}/reject
+# Authorization: Bearer {{restaurantToken}}
+# Content-Type: application/json
+# {"reason": "Kitchen closing soon"}
+
+### --- Delivery Failed ---
+### Walk through full flow to dispatch, then:
+# PUT {{baseUrl}}/api/delivery/requests/{{newDeliveryRequestId}}/fail
+# Authorization: Bearer {{riderToken}}
+# Content-Type: application/json
+# {"reason": "Customer unreachable"}
+### ✅ Proves DeliveryFailedEventHandler works!
+
+
+### ============================================================
+### DB VERIFICATION QUERY (run in psql/pgAdmin after Step 21)
+### ============================================================
+### SELECT id, status, rider_id, rider_name, rider_phone, updated_at
+### FROM orders.orders WHERE id = '{orderId}';
+###
+### Expected: status='Delivered', rider fields NOT NULL

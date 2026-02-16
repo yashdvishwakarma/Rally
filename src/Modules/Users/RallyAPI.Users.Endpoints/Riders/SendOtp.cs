@@ -13,7 +13,9 @@ public class SendOtp : IEndpoint
         app.MapPost("/api/riders/otp/send", HandleAsync)
             .WithTags("Riders")
             .WithSummary("Send OTP to rider phone")
-            .AllowAnonymous();
+            .AllowAnonymous()
+.RequireRateLimiting("otp");
+
     }
 
     private static async Task<IResult> HandleAsync(

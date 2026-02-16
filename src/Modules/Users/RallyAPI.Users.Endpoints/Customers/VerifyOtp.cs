@@ -13,7 +13,8 @@ public class VerifyOtp : IEndpoint
         app.MapPost("/api/customers/otp/verify", HandleAsync)
             .WithName("CustomerVerifyOtp")
             .WithTags("Customers")
-            .AllowAnonymous();
+            .AllowAnonymous()
+.RequireRateLimiting("otp");
     }
 
     public record VerifyCustomerOtpRequest(string PhoneNumber, string Otp);
