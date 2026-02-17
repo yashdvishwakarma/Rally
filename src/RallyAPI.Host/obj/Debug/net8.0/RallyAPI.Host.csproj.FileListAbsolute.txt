@@ -179,3 +179,4 @@ C:\Users\vishw\source\repos\Rally\src\RallyAPI.Host\obj\Debug\net8.0\RallyAPI.Ho
 C:\Users\vishw\source\repos\Rally\src\RallyAPI.Host\obj\Debug\net8.0\RallyAPI.Host.genruntimeconfig.cache
 C:\Users\vishw\source\repos\Rally\src\RallyAPI.Host\obj\Debug\net8.0\ref\RallyAPI.Host.dll
 C:\Users\vishw\source\repos\Rally\src\RallyAPI.Host\obj\Debug\net8.0\RallyAPI.Host.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\vishw\source\repos\Rally\src\RallyAPI.Host\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
