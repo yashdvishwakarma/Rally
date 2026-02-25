@@ -8,6 +8,7 @@ using RallyAPI.Users.Infrastructure.Services;
 using RallyAPI.SharedKernel.Abstractions.Riders;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using StackExchange.Redis;
+using RallyAPI.SharedKernel.Abstractions.Restaurants;
 namespace RallyAPI.Users.Infrastructure;
 
 public static class DependencyInjection
@@ -63,6 +64,7 @@ public static class DependencyInjection
         services.AddScoped<IAdminRepository, AdminRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+        services.AddScoped<IRestaurantQueryService, RestaurantQueryService>();
 
 
         // Rider services for cross-module communication

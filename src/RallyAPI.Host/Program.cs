@@ -6,16 +6,11 @@ using RallyAPI.Delivery.Endpoints;
 using RallyAPI.Infrastructure;
 using RallyAPI.Integrations.ProRouting;
 using RallyAPI.Orders.Endpoints;
-using RallyAPI.Orders.Infrastructure;
 using RallyAPI.Pricing.Infrastructure;
-using RallyAPI.SharedKernel.Abstractions.Delivery;
 using RallyAPI.SharedKernel.Extensions;
 using RallyAPI.SharedKernel.Infrastructure;
-using RallyAPI.Users.Domain.Entities;
 using RallyAPI.Users.Endpoints;
-using System.Reflection;
 using System.Security.Cryptography;
-using System.Text;
 using System.Threading.RateLimiting;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using System.Text.Json;
@@ -137,42 +132,41 @@ builder.Services.AddSwaggerGen(c =>
 
 
 // Add Rate Limiting
+var isDev = builder.Environment.IsDevelopment();
+
 builder.Services.AddRateLimiter(options =>
 {
-    // Rate limit for OTP requests: 3 per 10 minutes per IP
     options.AddPolicy("otp", context =>
         RateLimitPartition.GetSlidingWindowLimiter(
             context.Connection.RemoteIpAddress?.ToString() ?? "unknown",
             _ => new SlidingWindowRateLimiterOptions
             {
-                PermitLimit = 100,
-                Window = TimeSpan.FromMinutes(1),
+                PermitLimit = isDev ? 100 : 3,
+                Window = isDev ? TimeSpan.FromMinutes(1) : TimeSpan.FromMinutes(10),
                 SegmentsPerWindow = 2
             }));
 
-    // Rate limit for login: 5 per 15 minutes per IP
     options.AddPolicy("login", context =>
         RateLimitPartition.GetSlidingWindowLimiter(
             context.Connection.RemoteIpAddress?.ToString() ?? "unknown",
             _ => new SlidingWindowRateLimiterOptions
             {
-                PermitLimit = 100,
-                Window = TimeSpan.FromMinutes(1),
+                PermitLimit = isDev ? 100 : 5,
+                Window = isDev ? TimeSpan.FromMinutes(1) : TimeSpan.FromMinutes(15),
                 SegmentsPerWindow = 3
             }));
 
-    // Rate limit for token refresh: 10 per minute per IP
     options.AddPolicy("refresh", context =>
         RateLimitPartition.GetSlidingWindowLimiter(
             context.Connection.RemoteIpAddress?.ToString() ?? "unknown",
             _ => new SlidingWindowRateLimiterOptions
             {
-                PermitLimit = 100,
+                PermitLimit = isDev ? 100 : 10,
                 Window = TimeSpan.FromMinutes(1),
                 SegmentsPerWindow = 2
             }));
 
-    options.RejectionStatusCode = 429; // Too Many Requests
+    options.RejectionStatusCode = 429;
 });
 
 // CORS
@@ -207,17 +201,6 @@ app.UseCors();
 app.UseAuthentication();
 app.UseRateLimiter();
 app.UseAuthorization();
-
-
-/**
-
-Now we need to apply these policies to the endpoints. Paste your endpoint files so I know the exact methods to add `.RequireRateLimiting()` to:
-```
-src / Modules / Users / RallyAPI.Users.Endpoints / Customers / SendOtp.cs
-src / Modules / Users / RallyAPI.Users.Endpoints / Admins / Login.cs
-src / Modules / Users / RallyAPI.Users.Endpoints / Restaurants / Login.cs
-src / Modules / Users / RallyAPI.Users.Endpoints / Riders / SendOtp.cs
-**/
 
 
 // Map endpoints
@@ -256,28 +239,3 @@ app.Run();
 
 
 }
-
-// -------------------------------------------------------
-// EXPECTED RESPONSE from GET /health:
-// -------------------------------------------------------
-//
-//   {
-//     "status": "Healthy",
-//     "duration": "45.2ms",
-//     "checks": [
-//       {
-//         "name": "postgres",
-//         "status": "Healthy",
-//         "duration": "12.1ms",
-//         "error": null
-//       },
-//       {
-//         "name": "redis",
-//         "status": "Healthy",
-//         "duration": "3.4ms",
-//         "error": null
-//       }
-//     ]
-//   }
-//
-// ============================================================================
