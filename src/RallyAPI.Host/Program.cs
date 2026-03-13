@@ -194,7 +194,7 @@ builder.Services.AddCors(options =>
                 "http://localhost:3000",     // React dev server
                 "http://localhost:5173",     // Vite dev server
                 "http://localhost:8081",     // Expo/React Native web
-                "https://hivago.vercel.app")   // Production - update before deploy
+                "https://yourdomain.com")   // Production 
             .AllowAnyMethod()
             .AllowAnyHeader()
             .AllowCredentials();
@@ -225,6 +225,7 @@ app.UseAuthorization();
 app.MapUsersEndpoints();
 app.MapCatalogEndpoints();
 app.MapOrdersEndpoints();
+app.MapPaymentEndpoints();
 app.MapDeliveryModuleEndpoints();
 app.MapGet("/", () => "Rally API is running!");
 app.MapHealthChecks("/health", new HealthCheckOptions
