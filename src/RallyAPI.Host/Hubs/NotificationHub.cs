@@ -2,6 +2,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using RallyAPI.Delivery.Application.Commands.AcceptDeliveryOffer;
+using RallyAPI.Delivery.Application.Commands.DeclineDeliveryOffer;
 using System.Security.Claims;
 
 namespace RallyAPI.Host.Hubs;
@@ -82,12 +83,26 @@ public sealed class NotificationHub : Hub
 
     /// <summary>
     /// Called by rider app to decline a delivery offer.
-    /// TODO: Implement DeclineDeliveryOfferCommand and dispatch it here.
+    /// Marks the offer as rejected. The dispatch orchestrator will try the next rider on timeout.
     /// </summary>
-    public Task DeclineDeliveryOffer(Guid offerId)
+    public async Task DeclineDeliveryOffer(Guid offerId, string? reason = null)
     {
-        // DeclineDeliveryOfferCommand does not exist yet — wire up once created.
-        return Task.CompletedTask;
+        var riderId = GetUserId();
+        if (!riderId.HasValue)
+        {
+            await Clients.Caller.SendAsync("Error", "Unable to resolve rider identity.");
+            return;
+        }
+
+        var result = await _mediator.Send(new DeclineDeliveryOfferCommand
+        {
+            OfferId = offerId,
+            RiderId = riderId.Value,
+            Reason = reason
+        });
+
+        if (result.IsFailure)
+            await Clients.Caller.SendAsync("Error", result.Error.Message);
     }
 
     private Guid? GetUserId()
