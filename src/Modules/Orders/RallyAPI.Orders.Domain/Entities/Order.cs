@@ -282,6 +282,9 @@ public sealed class Order : AggregateRoot
     {
         EnsureValidTransition(OrderStatus.PickedUp);
 
+        if (!DeliveryInfo.RiderId.HasValue || DeliveryInfo.RiderId == Guid.Empty)
+            throw new InvalidOperationException("Cannot mark order as picked up: no rider has been assigned.");
+
         Status = OrderStatus.PickedUp;
         PickedUpAt = DateTime.UtcNow;
         UpdatedAt = DateTime.UtcNow;
