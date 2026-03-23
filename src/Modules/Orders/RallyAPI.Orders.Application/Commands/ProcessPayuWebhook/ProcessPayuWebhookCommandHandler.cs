@@ -45,7 +45,7 @@ public class ProcessPayuWebhookCommandHandler
         // 1. Verify reverse hash
         if (!_payUService.VerifyWebhookHash(formData))
         {
-            _logger.LogWarning("PayU webhook hash verification FAILED for TxnId {TxnId}", txnId);
+            _logger.LogError("PayU webhook hash verification FAILED for TxnId {TxnId}", txnId);
             return Result.Failure<bool>(
                 Error.Create("Payment.InvalidHash", "Webhook hash verification failed"));
         }
@@ -76,7 +76,21 @@ public class ProcessPayuWebhookCommandHandler
         if (string.Equals(status, "success", StringComparison.OrdinalIgnoreCase))
         {
             payment.MarkSuccess(payuId, mode, bankRefNum);
-            await _paymentRepository.UpdateAsync(payment, ct);
+
+            try
+            {
+                await _paymentRepository.UpdateAsync(payment, ct);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex,
+                    "Failed to persist payment success for TxnId {TxnId}, OrderId {OrderId}",
+                    txnId, payment.OrderId);
+                payment.MarkWebhookFailed();
+                try { await _paymentRepository.UpdateAsync(payment, ct); } catch { /* best-effort */ }
+                return Result.Failure<bool>(
+                    Error.Create("Payment.PersistFailed", $"Failed to save payment status for transaction {txnId}"));
+            }
 
             _logger.LogInformation(
                 "Payment SUCCESS for Order {OrderId}, TxnId: {TxnId}, PayuId: {PayuId}, Mode: {Mode}",
@@ -91,7 +105,21 @@ public class ProcessPayuWebhookCommandHandler
         else
         {
             payment.MarkFailed(payuId, errorMessage);
-            await _paymentRepository.UpdateAsync(payment, ct);
+
+            try
+            {
+                await _paymentRepository.UpdateAsync(payment, ct);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex,
+                    "Failed to persist payment failure for TxnId {TxnId}, OrderId {OrderId}",
+                    txnId, payment.OrderId);
+                payment.MarkWebhookFailed();
+                try { await _paymentRepository.UpdateAsync(payment, ct); } catch { /* best-effort */ }
+                return Result.Failure<bool>(
+                    Error.Create("Payment.PersistFailed", $"Failed to save payment status for transaction {txnId}"));
+            }
 
             _logger.LogWarning(
                 "Payment FAILED for Order {OrderId}, TxnId: {TxnId}, Error: {Error}",
