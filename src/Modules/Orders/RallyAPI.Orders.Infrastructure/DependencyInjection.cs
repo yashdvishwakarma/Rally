@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using RallyAPI.Orders.Application.Abstractions;
 using RallyAPI.Orders.Application.Cart.Abstractions;
+using RallyAPI.SharedKernel.Abstractions;
 using RallyAPI.Orders.Domain.Abstractions;
 using RallyAPI.Orders.Domain.Repositories;
 using RallyAPI.Orders.Infrastructure.BackgroundServices;
@@ -66,8 +67,9 @@ public static class DependencyInjection
         // Unit of Work
         services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-        // Cross-module stats service (consumed by admin stats query via SharedKernel abstraction)
+        // Cross-module services (consumed by admin queries via SharedKernel abstractions)
         services.AddScoped<IOrderStatsService, OrderStatsService>();
+        services.AddScoped<IEscalatedOrderQueryService, EscalatedOrderQueryService>();
 
         // Services
         services.AddScoped<IOrderNumberGenerator, OrderNumberGenerator>();

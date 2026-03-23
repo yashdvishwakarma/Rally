@@ -1,9 +1,7 @@
-using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
-using RallyAPI.Orders.Application.Queries.GetEscalatedOrders;
-using RallyAPI.SharedKernel.Extensions;
+using RallyAPI.SharedKernel.Abstractions.Orders;
 
 namespace RallyAPI.Users.Endpoints.Admins;
 
@@ -20,17 +18,14 @@ public class GetEscalatedOrders : IEndpoint
     private static async Task<IResult> HandleAsync(
         int page,
         int pageSize,
-        ISender sender,
+        IEscalatedOrderQueryService escalatedOrderService,
         CancellationToken cancellationToken)
     {
-        var query = new GetEscalatedOrdersQuery(
-            Page: page > 0 ? page : 1,
-            PageSize: pageSize is > 0 and <= 100 ? pageSize : 20);
+        var result = await escalatedOrderService.GetEscalatedOrdersAsync(
+            page: page > 0 ? page : 1,
+            pageSize: pageSize is > 0 and <= 100 ? pageSize : 20,
+            cancellationToken);
 
-        var result = await sender.Send(query, cancellationToken);
-
-        return result.IsFailure
-            ? result.Error.ToErrorResult()
-            : Results.Ok(result.Value);
+        return Results.Ok(result);
     }
 }

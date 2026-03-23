@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using RallyAPI.Orders.Application.Abstractions;
+using RallyAPI.SharedKernel.Abstractions;
 using RallyAPI.Orders.Application.Commands.AssignRider;
 using RallyAPI.Orders.Application.Commands.CancelOrder;
 using RallyAPI.Orders.Application.Commands.ConfirmOrder;
@@ -18,6 +19,9 @@ using RallyAPI.Orders.Application.Queries.GetOrderByNumber;
 using RallyAPI.Orders.Application.Queries.GetOrdersByCustomer;
 using RallyAPI.Orders.Application.Queries.GetOrdersByRestaurant;
 using RallyAPI.Orders.Domain.Enums;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using RallyAPI.SharedKernel.Abstractions.Distance;
 using RallyAPI.SharedKernel.Abstractions.Pricing;
 using RallyAPI.SharedKernel.Extensions;
@@ -150,50 +154,53 @@ public static class OrderEndpoints
 
 
 
-        app.MapGet("/api/test/distance", async (
-    IDistanceCalculator distanceCalculator,
-    IDeliveryPricingCalculator pricingCalculator) =>
+        var env = app.ServiceProvider.GetRequiredService<IWebHostEnvironment>();
+        if (env.IsDevelopment())
         {
-            // Test: Connaught Place → India Gate (Delhi)
-            var distance = await distanceCalculator.GetDistanceAsync(
-                28.6315, 77.2167,  // Connaught Place
-                28.6129, 77.2295); // India Gate
-
-            var pricing = await pricingCalculator.CalculateAsync(new DeliveryPriceRequest
+            app.MapGet("/api/test/distance", async (
+                IDistanceCalculator distanceCalculator,
+                IDeliveryPricingCalculator pricingCalculator) =>
             {
-                PickupLatitude = 28.6315,
-                PickupLongitude = 77.2167,
-                DropLatitude = 28.6129,
-                DropLongitude = 77.2295,
-                City = "Delhi",
-                OrderAmount = 500
-            });
+                var distance = await distanceCalculator.GetDistanceAsync(
+                    28.6315, 77.2167,
+                    28.6129, 77.2295);
 
-            return Results.Ok(new
-            {
-                Distance = new
+                var pricing = await pricingCalculator.CalculateAsync(new DeliveryPriceRequest
                 {
-                    distance.DistanceKm,
-                    distance.DurationMinutes,
-                    distance.DistanceText,
-                    distance.DurationText,
-                    distance.IsSuccess,
-                    distance.ErrorMessage
-                },
-                Pricing = new
+                    PickupLatitude = 28.6315,
+                    PickupLongitude = 77.2167,
+                    DropLatitude = 28.6129,
+                    DropLongitude = 77.2295,
+                    City = "Delhi",
+                    OrderAmount = 500
+                });
+
+                return Results.Ok(new
                 {
-                    pricing.FinalFee,
-                    pricing.BaseFee,
-                    pricing.DistanceKm,
-                    pricing.EstimatedMinutes,
-                    pricing.QuoteId,
-                    pricing.Breakdown,
-                    pricing.IsSuccess,
-                    pricing.ErrorMessage
-                }
-            });
-        })
-.WithTags("Test");
+                    Distance = new
+                    {
+                        distance.DistanceKm,
+                        distance.DurationMinutes,
+                        distance.DistanceText,
+                        distance.DurationText,
+                        distance.IsSuccess,
+                        distance.ErrorMessage
+                    },
+                    Pricing = new
+                    {
+                        pricing.FinalFee,
+                        pricing.BaseFee,
+                        pricing.DistanceKm,
+                        pricing.EstimatedMinutes,
+                        pricing.QuoteId,
+                        pricing.Breakdown,
+                        pricing.IsSuccess,
+                        pricing.ErrorMessage
+                    }
+                });
+            })
+            .WithTags("Test");
+        }
 
         return app;
     }

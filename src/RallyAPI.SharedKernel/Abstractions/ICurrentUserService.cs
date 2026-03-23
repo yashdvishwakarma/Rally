@@ -1,7 +1,8 @@
-﻿namespace RallyAPI.Orders.Application.Abstractions;
+namespace RallyAPI.SharedKernel.Abstractions;
 
 /// <summary>
 /// Provides access to current authenticated user information.
+/// Lives in SharedKernel so any module can reference it without cross-module coupling.
 /// </summary>
 public interface ICurrentUserService
 {

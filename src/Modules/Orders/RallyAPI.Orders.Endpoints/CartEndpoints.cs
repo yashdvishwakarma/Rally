@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using RallyAPI.Orders.Application.Abstractions;
+using RallyAPI.SharedKernel.Abstractions;
 using RallyAPI.Orders.Application.Cart.Commands.AddCartItem;
 using RallyAPI.Orders.Application.Cart.Commands.ClearCart;
 using RallyAPI.Orders.Application.Cart.Commands.RemoveCartItem;

@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
-using RallyAPI.Orders.Application.Abstractions;
+using RallyAPI.SharedKernel.Abstractions;
 using System.Security.Claims;
 
 namespace RallyAPI.Orders.Infrastructure.Services;
