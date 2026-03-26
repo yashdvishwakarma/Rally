@@ -241,6 +241,12 @@ namespace RallyAPI.Users.Infrastructure.Persistence.Migrations
                         .HasColumnType("character varying(500)")
                         .HasColumnName("address_line");
 
+                    b.Property<bool>("AutoAcceptOrders")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false)
+                        .HasColumnName("auto_accept_orders");
+
                     b.Property<int>("AvgPrepTimeMins")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
@@ -567,6 +573,11 @@ namespace RallyAPI.Users.Infrastructure.Persistence.Migrations
                                 .HasPrecision(11, 8)
                                 .HasColumnType("numeric(11,8)")
                                 .HasColumnName("longitude");
+
+                            b1.Property<string>("PlaceId")
+                                .HasMaxLength(300)
+                                .HasColumnType("character varying(300)")
+                                .HasColumnName("place_id");
 
                             b1.HasKey("CustomerAddressId");
 

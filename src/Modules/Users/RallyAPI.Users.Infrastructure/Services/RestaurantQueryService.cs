@@ -89,6 +89,7 @@ internal sealed class RestaurantQueryService : IRestaurantQueryService
             Longitude = (double)r.Longitude,
             IsActive = r.IsActive,
             IsAcceptingOrders = r.IsAcceptingOrders,
+            AutoAcceptOrders = r.AutoAcceptOrders,
             AvgPrepTimeMins = r.AvgPrepTimeMins,
             OpeningTime = r.OpeningTime,
             ClosingTime = r.ClosingTime

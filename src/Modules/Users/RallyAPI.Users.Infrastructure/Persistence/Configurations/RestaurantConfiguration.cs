@@ -79,6 +79,12 @@ public class RestaurantConfiguration : IEntityTypeConfiguration<Restaurant>
             .HasDefaultValue(false)
             .IsRequired();
 
+        // AutoAcceptOrders
+        builder.Property(r => r.AutoAcceptOrders)
+            .HasColumnName("auto_accept_orders")
+            .HasDefaultValue(false)
+            .IsRequired();
+
         // AvgPrepTimeMins
         builder.Property(r => r.AvgPrepTimeMins)
             .HasColumnName("avg_prep_time_mins")
