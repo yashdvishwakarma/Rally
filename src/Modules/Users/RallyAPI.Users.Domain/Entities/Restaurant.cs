@@ -19,8 +19,9 @@ public sealed class Restaurant : AggregateRoot
     public TimeOnly OpeningTime { get; private set; }
     public TimeOnly ClosingTime { get; private set; }
     public decimal CommissionPercentage { get; private set; }
+    public bool AutoAcceptOrders { get; private set; }
     public string? LogoUrl { get; private set; }
-    public string? LogoFileKey { get; private set; }  // ← add this
+    public string? LogoFileKey { get; private set; }
 
     // EF Core
     private Restaurant() { }
@@ -43,6 +44,7 @@ public sealed class Restaurant : AggregateRoot
         Longitude = longitude;
         IsActive = true;
         IsAcceptingOrders = false; // Start as not accepting
+        AutoAcceptOrders = false; // Restaurant must opt in
         AvgPrepTimeMins = 20; // Default
         OpeningTime = new TimeOnly(9, 0);
         ClosingTime = new TimeOnly(22, 0);
@@ -145,6 +147,13 @@ public sealed class Restaurant : AggregateRoot
     public Result StopAcceptingOrders()
     {
         IsAcceptingOrders = false;
+        MarkAsUpdated();
+        return Result.Success();
+    }
+
+    public Result SetAutoAcceptOrders(bool enabled)
+    {
+        AutoAcceptOrders = enabled;
         MarkAsUpdated();
         return Result.Success();
     }
