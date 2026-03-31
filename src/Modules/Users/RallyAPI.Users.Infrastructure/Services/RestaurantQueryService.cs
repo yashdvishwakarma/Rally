@@ -92,7 +92,9 @@ internal sealed class RestaurantQueryService : IRestaurantQueryService
             AutoAcceptOrders = r.AutoAcceptOrders,
             AvgPrepTimeMins = r.AvgPrepTimeMins,
             OpeningTime = r.OpeningTime,
-            ClosingTime = r.ClosingTime
+            ClosingTime = r.ClosingTime,
+            CommissionPercentage = r.CommissionPercentage,
+            OwnerId = r.OwnerId
         };
     }
 
