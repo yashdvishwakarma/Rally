@@ -77,6 +77,7 @@ public static class DependencyInjection
         services.AddScoped<IEscalatedOrderQueryService, EscalatedOrderQueryService>();
         services.AddScoped<ILiveOrderFeedService, LiveOrderFeedService>();
         services.AddScoped<IAdminAlertsService, AdminAlertsService>();
+        services.AddScoped<IAdminOrderQueryService, AdminOrderQueryService>();
 
         // Services
         services.AddScoped<IOrderNumberGenerator, OrderNumberGenerator>();
